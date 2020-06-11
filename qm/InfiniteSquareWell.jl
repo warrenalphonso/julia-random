@@ -69,7 +69,7 @@ The probability of finding a particle in a stationary state at a certain positio
 begin
 	a = 2
 	m = 1e-34
-	ω = (π^2 * ħ / (2*m*a^a))
+	ω = (π^2 * ħ / (2*m*a^2))
 end
 
 # ╔═╡ f81bf9d2-abb9-11ea-25f7-7ffbbace40c0
@@ -78,7 +78,7 @@ end
 
 # ╔═╡ 55628b2a-abff-11ea-164a-6deb7cd70b1d
 # Varying this slider won't change much for the plot above because stationary states 
-# don't change with time. But it will affect the plot below. 
+# don't change with time. 
 @bind t Slider(0:10)
 
 # ╔═╡ ab687ea8-abb9-11ea-2bff-db56b90cd8d5
@@ -88,8 +88,8 @@ let
 	ϕ = gen_ϕ(E(n))
 	prob = gen_prob((x, t) -> ψ(x)*ϕ(t))
 	
-	plot((x) -> prob(x, t), 0:.01:a)
-	title!("Probability density at t=0")
+	plot((x) -> prob(x, t), 0:.01:a, label=nothing)
+	title!("PDF at t=$t for stationary state $n")
 	xlabel!("x")
 	ylabel!("Probability")
 end
@@ -104,6 +104,11 @@ md"""
 We don't get much interesting behavior in stationary states, but if we take a linear combination of stationary states, we suddenly get variation with respect to time in the probability density. 
 """
 
+# ╔═╡ 92700f24-ac10-11ea-36c8-cda73785bdee
+md"""
+### Ground state and first excited state
+"""
+
 # ╔═╡ 536959aa-abfe-11ea-252c-bb2e4e68748b
 let 
 	ψ₁ = gen_ψ(a, 1)
@@ -111,13 +116,21 @@ let
 	E = gen_E(m, a)
 	ϕ₁ = gen_ϕ(E(1))
 	ϕ₂ = gen_ϕ(E(2))
-	normalization_constant = 1/√2 
+	normalization_constant = 1/√2
 	state = (x, t) -> normalization_constant * ( ψ₁(x)*ϕ₁(t) + ψ₂(x)*ϕ₂(t) )
 	prob = gen_prob(state)
 	
-	plot((x) -> prob(x, t), 0:.01:a)
-	
+	plot((x) -> prob.(x, t), 0:.01:a, 
+					  title="PDF at t=$t for first two stationary states", 					  			  xlabel="x", ylabel="PDF", label=nothing)
 end
+
+# ╔═╡ eeaae92a-ac12-11ea-0eee-d9a22a2e2e09
+function prob_first_two(x, t)
+	1/a * ( sinpi(x/a)^2 + sinpi(2x/a)^2 + 2*sinpi(x/a)*sinpi(2x/a)*cos(3*ω*t))
+end
+
+# ╔═╡ 16d55dba-ac13-11ea-190a-472dee6e492a
+prob_first_two(0.5, 0)
 
 # ╔═╡ 8d9c271a-ac01-11ea-3e94-ad2b10f57efd
 function plot_one_and_two_stationary(t) 
@@ -134,7 +147,8 @@ function plot_one_and_two_stationary(t)
 	y = imag(state.(x, t))
 	z = real(state.(x, t))
 	plot(x,y,z, xaxis="x", yaxis="Imaginary component", zaxis="Real component", 
-		 xlims=(0, a), ylims=(-1,1), zlims=(-1,1), label="Wavefunction ψ", 
+		 xlims=(0, a), ylims=(-1,1), zlims=(-1,2), label="Wavefunction ψ", 
+		 title="Time evolution of first 2 stationary states",
 		 fillrange = 0)
 	plot!(x, [0 for i in x], prob.(x, t), label="PDF", fillrange=0)
 end
@@ -144,7 +158,79 @@ let
 	anim = @animate for t in 0 : ω/50 : 3ω
 		plot_one_and_two_stationary(t)
 	end
-	gif(anim, "one_and_two_stationary.gif", fps=15)
+	gif(anim, "qm/one_and_two_stationary.gif", fps=15)
+end
+
+# ╔═╡ 8f3f1dd2-ac10-11ea-1141-1783ff0afd09
+md"""
+### Ground state and first 2 excited states 
+"""
+
+# ╔═╡ a9c3d172-ac10-11ea-16a8-d5bea89b6d7f
+function plot_first_three_stationary(t)
+	ψ₁ = gen_ψ(a, 1)
+	ψ₂ = gen_ψ(a, 2)
+	ψ₃ = gen_ψ(a, 3)
+	E = gen_E(m, a)
+	ϕ₁ = gen_ϕ(E(1))
+	ϕ₂ = gen_ϕ(E(2))
+	ϕ₃ = gen_ϕ(E(3))
+	normalization_constant = 1/√3
+	state = (x,t) -> normalization_constant*(ψ₁(x)*ϕ₁(t) + ψ₂(x)*ϕ₂(t) + ψ₃(x)*ϕ₃(t))
+	prob = gen_prob(state)
+	
+	x = 0:0.01:a
+	y = imag(state.(x, t))
+	z = real(state.(x, t))
+	plot(x,y,z, xaxis="x", yaxis="Imaginary component", zaxis="Real component", 
+		 xlims=(0, a), ylims=(-1,1), zlims=(-1,2), label="Wavefunction ψ", 
+		 title="Time evolution for first 3 stationary states", 
+		 fillrange = 0)
+	plot!(x, [0 for i in x], prob.(x, t), label="PDF", fillrange=0)
+end
+
+# ╔═╡ 26cac9fa-ac11-11ea-1fdc-0b66dc7aa9d6
+let
+	anim = @animate for t in 0 : ω/50 : 3ω
+		plot_first_three_stationary(t)
+	end
+	gif(anim, "qm/first_three_stationary.gif", fps=15)
+end
+
+# ╔═╡ 37c1ba02-ac11-11ea-3f8f-f3dc00039d4b
+md"""
+### Stationary states 4, 6, and 9
+"""
+
+# ╔═╡ 5a37b438-ac11-11ea-0f0e-3faef2740785
+function plot_4_6_9_stationary(t)
+	ψ₄ = gen_ψ(a, 4)
+	ψ₆ = gen_ψ(a, 6)
+	ψ₉ = gen_ψ(a, 9)
+	E = gen_E(m, a)
+	ϕ₄ = gen_ϕ(E(4))
+	ϕ₆ = gen_ϕ(E(6))
+	ϕ₉ = gen_ϕ(E(9))
+	normalization_constant = 1/√3
+	state = (x,t) -> normalization_constant*(ψ₄(x)*ϕ₄(t) + ψ₆(x)*ϕ₆(t) + ψ₉(x)*ϕ₉(t))
+	prob = gen_prob(state)
+	
+	x = 0:0.01:a
+	y = imag(state.(x, t))
+	z = real(state.(x, t))
+	plot(x,y,z, xaxis="x", yaxis="Imaginary component", zaxis="Real component", 
+		 xlims=(0, a), ylims=(-1,1), zlims=(-1,2), label="Wavefunction ψ", 
+		 title="Time evolution for stationary states 4, 6, and 9", 
+		 fillrange = 0)
+	plot!(x, [0 for i in x], prob.(x, t), label="PDF", fillrange=0)
+end
+
+# ╔═╡ aa1d9666-ac11-11ea-36e7-253746b0a0e8
+let
+	anim = @animate for t in 0 : ω/200 : 3ω
+		plot_4_6_9_stationary(t)
+	end
+	gif(anim, "qm/4_6_9_stationary.gif", fps=15)
 end
 
 # ╔═╡ Cell order:
@@ -164,6 +250,15 @@ end
 # ╠═55628b2a-abff-11ea-164a-6deb7cd70b1d
 # ╠═0e0549d2-abbb-11ea-0ee0-cfbd662a355c
 # ╟─253859d2-abbb-11ea-1f4a-cdd7201b4fba
+# ╟─92700f24-ac10-11ea-36c8-cda73785bdee
 # ╠═536959aa-abfe-11ea-252c-bb2e4e68748b
+# ╠═eeaae92a-ac12-11ea-0eee-d9a22a2e2e09
+# ╠═16d55dba-ac13-11ea-190a-472dee6e492a
 # ╠═8d9c271a-ac01-11ea-3e94-ad2b10f57efd
 # ╠═9038472e-ac06-11ea-047f-7f38d158b192
+# ╟─8f3f1dd2-ac10-11ea-1141-1783ff0afd09
+# ╠═a9c3d172-ac10-11ea-16a8-d5bea89b6d7f
+# ╠═26cac9fa-ac11-11ea-1fdc-0b66dc7aa9d6
+# ╟─37c1ba02-ac11-11ea-3f8f-f3dc00039d4b
+# ╠═5a37b438-ac11-11ea-0f0e-3faef2740785
+# ╠═aa1d9666-ac11-11ea-36e7-253746b0a0e8
