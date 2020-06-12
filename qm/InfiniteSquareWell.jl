@@ -111,7 +111,7 @@ let
 	anim = @animate for t in 0 : ω/50 : 3ω
 		plot_single_stationary(t)
 	end
-	gif(anim, "qm/single_stationary.gif", fps=15)
+	gif(anim, "qm/assets/ISW_single_stationary.gif", fps=15)
 end
 
 # ╔═╡ 0e0549d2-abbb-11ea-0ee0-cfbd662a355c
@@ -155,7 +155,7 @@ let
 	anim = @animate for t in 0 : ω/50 : 3ω
 		plot_one_and_two_stationary(t)
 	end
-	gif(anim, "qm/one_and_two_stationary.gif", fps=15)
+	gif(anim, "qm/assets/ISW_stationary_1_2.gif", fps=15)
 end
 
 # ╔═╡ 8f3f1dd2-ac10-11ea-1141-1783ff0afd09
@@ -191,7 +191,7 @@ let
 	anim = @animate for t in 0 : ω/50 : 3ω
 		plot_first_three_stationary(t)
 	end
-	gif(anim, "qm/first_three_stationary.gif", fps=15)
+	gif(anim, "qm/assets/ISW_stationary_1_2_3.gif", fps=15)
 end
 
 # ╔═╡ 37c1ba02-ac11-11ea-3f8f-f3dc00039d4b
@@ -227,7 +227,7 @@ let
 	anim = @animate for t in 0 : ω/200 : 3ω
 		plot_4_6_9_stationary(t)
 	end
-	gif(anim, "qm/4_6_9_stationary.gif", fps=15)
+	gif(anim, "qm/assets/ISW_stationary_4_6_9.gif", fps=15)
 end
 
 # ╔═╡ Cell order:

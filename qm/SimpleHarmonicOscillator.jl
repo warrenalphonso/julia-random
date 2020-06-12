@@ -92,6 +92,14 @@ function plot_ground(t)
 	plot!(x, [0 for i in x], prob.(x, t), label="PDF", fillrange=0)
 end
 
+# ╔═╡ 842994fc-ac69-11ea-2eab-2f66ccd65b10
+let 
+	anim = @animate for t in 0 : ω/150 : ω
+		plot_ground(t)
+	end
+	gif(anim, "qm/assets/SHO_stationary_0.gif", fps=15)
+end
+
 # ╔═╡ e55de9ac-ac6a-11ea-14cf-bdffee0e99df
 md"""
 ## Normalizing creation and annihilation operators 
@@ -113,14 +121,6 @@ gen_ψₙ(1)
 # ╔═╡ 9cf344b2-ac6c-11ea-2c56-41fe92461ba3
 # Vary this slider to change the stationary state
 @bind n Slider(0:5)
-
-# ╔═╡ 842994fc-ac69-11ea-2eab-2f66ccd65b10
-let 
-	anim = @animate for t in 0 : ω/150 : ω
-		plot_ground(t)
-	end
-	gif(anim, "qm/sho_ground.gif", fps=15)
-end
 
 # ╔═╡ 71811278-ac6c-11ea-0eac-4d4f3bd75334
 function plot_stationary(t) 
@@ -144,7 +144,7 @@ let
 	anim = @animate for t in 0 : ω/150 : ω
 		plot_stationary(t)
 	end
-	gif(anim, "qm/sho_stationary.gif", fps=15)
+	gif(anim, "qm/assets/SHO_single_stationary.gif", fps=15)
 end
 
 # ╔═╡ 59e62922-ac6d-11ea-1eeb-93c41c597838
