@@ -1,5 +1,5 @@
 ### A Pluto.jl notebook ###
-# v0.9.8
+# v0.9.9
 
 using Markdown
 macro bind(def, element)
@@ -40,6 +40,18 @@ $$- \frac{\hbar^2}{2m} \frac{d^2 \psi}{dx^2} + V \psi = E \psi$$
 Then the time-dependent version of this *stationary state* is 
 
 $$\Psi(x, t) = \psi(x) e^{-i Et / \hbar}$$
+
+The infinite square well is an ideal scenario where we have the potential energy 
+
+$$V(x) = 
+\left\{ 
+	\begin{array}{ll}
+        0 & \mbox{if } 0 \leq x \leq a\\
+        \infty & \mbox{otherwise}
+    \end{array}
+\right.$$
+
+This potential makes it clear that our amplitude outside the "box" must be 0, else the wavefunction won't be normalizable. 
 """
 
 # ╔═╡ d978aae6-abac-11ea-28a1-db47ea594749
@@ -76,26 +88,34 @@ end
 # Vary this slider to change the stationary state
 @bind n Slider(1:15)
 
-# ╔═╡ 55628b2a-abff-11ea-164a-6deb7cd70b1d
-# Varying this slider won't change much for the plot above because stationary states 
-# don't change with time. 
-@bind t Slider(0:10)
-
 # ╔═╡ ab687ea8-abb9-11ea-2bff-db56b90cd8d5
-let 
+function plot_single_stationary(t) 
 	ψ = gen_ψ(a, n)
 	E = gen_E(m, a)
 	ϕ = gen_ϕ(E(n))
-	prob = gen_prob((x, t) -> ψ(x)*ϕ(t))
+	state = (x,t) -> ψ(x)*ϕ(t)
+	prob = gen_prob(state)
 	
-	plot((x) -> prob(x, t), 0:.01:a, label=nothing)
-	title!("PDF at t=$t for stationary state $n")
-	xlabel!("x")
-	ylabel!("Probability")
+	x = 0:0.01:a
+	y = imag(state.(x, t))
+	z = real(state.(x, t))
+	plot(x,y,z, xaxis="x", yaxis="Imaginary component", zaxis="Real component", 
+		 xlims=(0, a), ylims=(-1,1), zlims=(-1,2), label="Wavefunction ψ", 
+		 title="Time evolution of stationary state $n",
+		 fillrange = 0)
+	plot!(x, [0 for i in x], prob.(x, t), label="PDF", fillrange=0)
+end
+
+# ╔═╡ 4f514964-ac5f-11ea-045a-eb79fd948a49
+let 
+	anim = @animate for t in 0 : ω/50 : 3ω
+		plot_single_stationary(t)
+	end
+	gif(anim, "qm/single_stationary.gif", fps=15)
 end
 
 # ╔═╡ 0e0549d2-abbb-11ea-0ee0-cfbd662a355c
-(n, t)
+n
 
 # ╔═╡ 253859d2-abbb-11ea-1f4a-cdd7201b4fba
 md"""
@@ -108,29 +128,6 @@ We don't get much interesting behavior in stationary states, but if we take a li
 md"""
 ### Ground state and first excited state
 """
-
-# ╔═╡ 536959aa-abfe-11ea-252c-bb2e4e68748b
-let 
-	ψ₁ = gen_ψ(a, 1)
-	ψ₂ = gen_ψ(a, 2)
-	E = gen_E(m, a)
-	ϕ₁ = gen_ϕ(E(1))
-	ϕ₂ = gen_ϕ(E(2))
-	normalization_constant = 1/√2
-	state = (x, t) -> normalization_constant * ( ψ₁(x)*ϕ₁(t) + ψ₂(x)*ϕ₂(t) )
-	prob = gen_prob(state)
-	
-	plot((x) -> prob.(x, t), 0:.01:a, 
-					  title="PDF at t=$t for first two stationary states", 					  			  xlabel="x", ylabel="PDF", label=nothing)
-end
-
-# ╔═╡ eeaae92a-ac12-11ea-0eee-d9a22a2e2e09
-function prob_first_two(x, t)
-	1/a * ( sinpi(x/a)^2 + sinpi(2x/a)^2 + 2*sinpi(x/a)*sinpi(2x/a)*cos(3*ω*t))
-end
-
-# ╔═╡ 16d55dba-ac13-11ea-190a-472dee6e492a
-prob_first_two(0.5, 0)
 
 # ╔═╡ 8d9c271a-ac01-11ea-3e94-ad2b10f57efd
 function plot_one_and_two_stationary(t) 
@@ -246,14 +243,11 @@ end
 # ╟─e8fbd416-abb6-11ea-2d8b-f3614b2702be
 # ╠═a849fc4e-abb7-11ea-0847-2190d7ccd188
 # ╠═ab687ea8-abb9-11ea-2bff-db56b90cd8d5
+# ╠═4f514964-ac5f-11ea-045a-eb79fd948a49
 # ╠═f81bf9d2-abb9-11ea-25f7-7ffbbace40c0
-# ╠═55628b2a-abff-11ea-164a-6deb7cd70b1d
 # ╠═0e0549d2-abbb-11ea-0ee0-cfbd662a355c
 # ╟─253859d2-abbb-11ea-1f4a-cdd7201b4fba
 # ╟─92700f24-ac10-11ea-36c8-cda73785bdee
-# ╠═536959aa-abfe-11ea-252c-bb2e4e68748b
-# ╠═eeaae92a-ac12-11ea-0eee-d9a22a2e2e09
-# ╠═16d55dba-ac13-11ea-190a-472dee6e492a
 # ╠═8d9c271a-ac01-11ea-3e94-ad2b10f57efd
 # ╠═9038472e-ac06-11ea-047f-7f38d158b192
 # ╟─8f3f1dd2-ac10-11ea-1141-1783ff0afd09
