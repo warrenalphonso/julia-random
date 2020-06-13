@@ -56,19 +56,19 @@ This potential makes it clear that our amplitude outside the "box" must be 0, el
 
 # ╔═╡ d978aae6-abac-11ea-28a1-db47ea594749
 # Function for nth stationary state 
-const gen_ψ(a, n) = (x) -> √(2/a) * sinpi(n*x/a)
+const gen_ψ(a::Float64, n::Int64) = (x::Float64) -> √(2/a) * sinpi(n*x/a)
 
 # ╔═╡ bb2fe374-abb6-11ea-3ffb-635dda2838af
 # Function for time-dependence of stationary state 
-const gen_ϕ(E) = (t) -> exp(-im*E*t/ħ)
+const gen_ϕ(E::Float64) = (t::Float64) -> exp(-im*E*t/ħ)
 
 # ╔═╡ 66f37014-abb6-11ea-001f-d52cbffe020e
 # Funtion for nth energy value 
-const gen_E(m, a) = (n) -> (n^2 * π^2 * ħ^2)/(2 * m * a^2)
+const gen_E(m::Float64, a::Float64) = (n::Int64) -> (n^2 * π^2 * ħ^2)/(2 * m * a^2)
 
 # ╔═╡ 1a51e348-abb7-11ea-056f-ef297ec19c80
 # Function to get probability of finding particle at position x at time t 
-gen_prob(ψ) = (x,t) -> real( conj(ψ(x,t)) * ψ(x,t) )
+const gen_prob(ψ) = (x::Float64,t::Float64) -> real( conj(ψ(x,t)) * ψ(x,t) )
 
 # ╔═╡ e8fbd416-abb6-11ea-2d8b-f3614b2702be
 md"""
@@ -79,9 +79,9 @@ The probability of finding a particle in a stationary state at a certain positio
 
 # ╔═╡ a849fc4e-abb7-11ea-0847-2190d7ccd188
 begin
-	a = 2
-	m = 1e-34
-	ω = (π^2 * ħ / (2*m*a^2))
+	const a = 2
+	const m = 1e-34
+	const ω = (π^2 * ħ / (2*m*a^2))
 end
 
 # ╔═╡ f81bf9d2-abb9-11ea-25f7-7ffbbace40c0
