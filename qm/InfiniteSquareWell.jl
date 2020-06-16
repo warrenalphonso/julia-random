@@ -79,7 +79,7 @@ The probability of finding a particle in a stationary state at a certain positio
 
 # ╔═╡ a849fc4e-abb7-11ea-0847-2190d7ccd188
 begin
-	const a = 2
+	const a = 2.
 	const m = 1e-34
 	const ω = (π^2 * ħ / (2*m*a^2))
 end
@@ -96,7 +96,7 @@ function plot_single_stationary(t)
 	state = (x,t) -> ψ(x)*ϕ(t)
 	prob = gen_prob(state)
 	
-	x = 0:0.01:a
+	x = 0:0.1:a
 	y = imag(state.(x, t))
 	z = real(state.(x, t))
 	plot(x,y,z, xaxis="x", yaxis="Imaginary component", zaxis="Real component", 
@@ -106,12 +106,13 @@ function plot_single_stationary(t)
 	plot!(x, [0 for i in x], prob.(x, t), label="PDF", fillrange=0)
 end
 
-# ╔═╡ 4f514964-ac5f-11ea-045a-eb79fd948a49
+# ╔═╡ a1dff3be-b007-11ea-3b49-e52c6503d5ac
 let 
-	anim = @animate for t in 0 : ω/50 : 3ω
+	anim = @animate for t in 0 : ω/5 : 3ω
 		plot_single_stationary(t)
 	end
-	gif(anim, "qm/assets/ISW_single_stationary.gif", fps=15)
+	gif(anim, fps=15)
+	#gif(anim, "qm/assets/ISW_single_stationary.gif", fps=15)
 end
 
 # ╔═╡ 0e0549d2-abbb-11ea-0ee0-cfbd662a355c
@@ -140,7 +141,7 @@ function plot_one_and_two_stationary(t)
 	state = (x, t) -> normalization_constant * ( ψ₁(x)*ϕ₁(t) + ψ₂(x)*ϕ₂(t) )
 	prob = gen_prob(state)
 	
-	x = 0:0.01:a
+	x = 0:0.1:a
 	y = imag(state.(x, t))
 	z = real(state.(x, t))
 	plot(x,y,z, xaxis="x", yaxis="Imaginary component", zaxis="Real component", 
@@ -152,10 +153,11 @@ end
 
 # ╔═╡ 9038472e-ac06-11ea-047f-7f38d158b192
 let 
-	anim = @animate for t in 0 : ω/50 : 3ω
+	anim = @animate for t in 0 : ω/5 : 3ω
 		plot_one_and_two_stationary(t)
 	end
-	gif(anim, "qm/assets/ISW_stationary_1_2.gif", fps=15)
+	#gif(anim, "qm/assets/ISW_stationary_1_2.gif", fps=15)
+	gif(anim, fps=15)
 end
 
 # ╔═╡ 8f3f1dd2-ac10-11ea-1141-1783ff0afd09
@@ -176,7 +178,7 @@ function plot_first_three_stationary(t)
 	state = (x,t) -> normalization_constant*(ψ₁(x)*ϕ₁(t) + ψ₂(x)*ϕ₂(t) + ψ₃(x)*ϕ₃(t))
 	prob = gen_prob(state)
 	
-	x = 0:0.01:a
+	x = 0:0.1:a
 	y = imag(state.(x, t))
 	z = real(state.(x, t))
 	plot(x,y,z, xaxis="x", yaxis="Imaginary component", zaxis="Real component", 
@@ -188,10 +190,11 @@ end
 
 # ╔═╡ 26cac9fa-ac11-11ea-1fdc-0b66dc7aa9d6
 let
-	anim = @animate for t in 0 : ω/50 : 3ω
+	anim = @animate for t in 0 : ω/5 : 3ω
 		plot_first_three_stationary(t)
 	end
-	gif(anim, "qm/assets/ISW_stationary_1_2_3.gif", fps=15)
+	#gif(anim, "qm/assets/ISW_stationary_1_2_3.gif", fps=15)
+	gif(anim, fps=15)
 end
 
 # ╔═╡ 37c1ba02-ac11-11ea-3f8f-f3dc00039d4b
@@ -212,7 +215,7 @@ function plot_4_6_9_stationary(t)
 	state = (x,t) -> normalization_constant*(ψ₄(x)*ϕ₄(t) + ψ₆(x)*ϕ₆(t) + ψ₉(x)*ϕ₉(t))
 	prob = gen_prob(state)
 	
-	x = 0:0.01:a
+	x = 0:0.1:a
 	y = imag(state.(x, t))
 	z = real(state.(x, t))
 	plot(x,y,z, xaxis="x", yaxis="Imaginary component", zaxis="Real component", 
@@ -224,10 +227,33 @@ end
 
 # ╔═╡ aa1d9666-ac11-11ea-36e7-253746b0a0e8
 let
-	anim = @animate for t in 0 : ω/200 : 3ω
+	anim = @animate for t in 0 : ω/5 : 3ω
 		plot_4_6_9_stationary(t)
 	end
-	gif(anim, "qm/assets/ISW_stationary_4_6_9.gif", fps=15)
+	#gif(anim, "qm/assets/ISW_stationary_4_6_9.gif", fps=15)
+	gif(anim, fps=15)
+end
+
+# ╔═╡ b6a6ed26-b004-11ea-3800-518b06ae5ccb
+md"""
+### $\langle x \rangle$ and $\langle p \rangle$ for linear combinations of stationary states
+
+For an equal comination of the first and second stationary states, we get 
+
+$$\langle x \rangle  = \frac{a}{2} - \frac{16a}{9\pi^2} \cos ( 3 \omega t )$$
+
+$$\langle p \rangle = \frac{8\hbar}{3a} \sin(3 \omega t)$$
+
+Notice $\langle p \rangle$ stays near 0 unless $a$ is as small as $\hbar$. 
+"""
+
+# ╔═╡ d2a50280-b004-11ea-1280-23b0b7be657c
+let
+	exp_x(t) = a/2 - (16a / (9π^2)) * cos(3*ω*t) 
+	exp_p(t) = (8ħ / 3a) * sin(3*ω*t)
+	range = 0:ω/50:2π/3ω
+	plot(range, exp_x.(range), xaxis="t", label="⟨x⟩")
+	plot!(range, exp_p.(range), label="⟨p⟩")
 end
 
 # ╔═╡ Cell order:
@@ -243,7 +269,7 @@ end
 # ╟─e8fbd416-abb6-11ea-2d8b-f3614b2702be
 # ╠═a849fc4e-abb7-11ea-0847-2190d7ccd188
 # ╠═ab687ea8-abb9-11ea-2bff-db56b90cd8d5
-# ╠═4f514964-ac5f-11ea-045a-eb79fd948a49
+# ╠═a1dff3be-b007-11ea-3b49-e52c6503d5ac
 # ╠═f81bf9d2-abb9-11ea-25f7-7ffbbace40c0
 # ╠═0e0549d2-abbb-11ea-0ee0-cfbd662a355c
 # ╟─253859d2-abbb-11ea-1f4a-cdd7201b4fba
@@ -256,3 +282,5 @@ end
 # ╟─37c1ba02-ac11-11ea-3f8f-f3dc00039d4b
 # ╠═5a37b438-ac11-11ea-0f0e-3faef2740785
 # ╠═aa1d9666-ac11-11ea-36e7-253746b0a0e8
+# ╟─b6a6ed26-b004-11ea-3800-518b06ae5ccb
+# ╠═d2a50280-b004-11ea-1280-23b0b7be657c
