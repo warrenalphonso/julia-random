@@ -94,10 +94,11 @@ end
 
 # ╔═╡ 842994fc-ac69-11ea-2eab-2f66ccd65b10
 let 
-	anim = @animate for t in 0 : ω/150 : ω
+	anim = @animate for t in 0 : ω/50 : ω
 		plot_ground(t)
 	end
-	gif(anim, "qm/assets/SHO_stationary_0.gif", fps=15)
+	gif(anim, fps=15)
+	#gif(anim, "qm/assets/SHO_stationary_0.gif", fps=15)
 end
 
 # ╔═╡ e55de9ac-ac6a-11ea-14cf-bdffee0e99df
@@ -141,10 +142,11 @@ end
 
 # ╔═╡ a90ca43c-ac6c-11ea-3361-bd79c7612887
 let 
-	anim = @animate for t in 0 : ω/150 : ω
+	anim = @animate for t in 0 : ω/50 : ω
 		plot_stationary(t)
 	end
-	gif(anim, "qm/assets/SHO_single_stationary.gif", fps=15)
+	gif(anim, fps=15)
+	#gif(anim, "qm/assets/SHO_single_stationary.gif", fps=15)
 end
 
 # ╔═╡ 59e62922-ac6d-11ea-1eeb-93c41c597838
