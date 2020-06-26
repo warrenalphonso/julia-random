@@ -15,15 +15,8 @@ raising operator to it: a₊ψ.
 
 ``a_+ = \sqrt{\frac{m \omega}{2 \hbar}}``
 """
-raising(ψ) = (x) -> begin
-	res = 1 / √(2*ħ*m*ω) * (
+raising(ψ) = (x) -> 1 / √(2*ħ*m*ω) * (
     -ħ * ForwardDiff.derivative(ψ, x) + m*ω*x*ψ(x) )
-	if res === 0
-		println(x)
-	else
-		return res
-	end
-end
 
 lowering(ψ) = (x) -> 1 / √(2*ħ*m*ω) * (
     ħ * ForwardDiff.derivative(ψ, x) + m*ω*x*ψ(x) )
@@ -112,9 +105,8 @@ function approx_integral(f, a, b, n=10000)
 end
 
 function normalize(ψ)
-	# I wonder if this scales with the bounds of integration
-	integral = approx_integral(ψ' * ψ, -100, 100)
-	return ((y) -> y / integral) ∘ ψ
+	integral = approx_integral((x) -> real( conj(ψ(x)) * ψ(x) ), -100, 100)
+	return (x) -> ψ(x) / integral
 end
 
-test = normalize(gen_ψ_n(0))
+println( approx_integral(normalize(gen_ψ_n(3)), -100, 100) )
