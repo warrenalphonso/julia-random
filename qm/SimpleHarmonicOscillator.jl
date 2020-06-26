@@ -15,8 +15,15 @@ raising operator to it: a₊ψ.
 
 ``a_+ = \sqrt{\frac{m \omega}{2 \hbar}}``
 """
-raising(ψ) = (x) -> 1 / √(2*ħ*m*ω) * (
+raising(ψ) = (x) -> begin
+	res = 1 / √(2*ħ*m*ω) * (
     -ħ * ForwardDiff.derivative(ψ, x) + m*ω*x*ψ(x) )
+	if res === 0
+		println(x)
+	else
+		return res
+	end
+end
 
 lowering(ψ) = (x) -> 1 / √(2*ħ*m*ω) * (
     ħ * ForwardDiff.derivative(ψ, x) + m*ω*x*ψ(x) )
@@ -95,3 +102,19 @@ gif(anim, fps=15)
 
 
 # Linear combinations of stationary states
+
+# From https://calculuswithjulia.github.io/integrals/area.html
+function approx_integral(f, a, b, n=10000)
+	xs = a:(b-a)/n:b
+	deltas = diff(xs)
+	cs = xs[1:end-1]
+	return sum(f(xs[i]) * deltas[i] for i in 1:length(deltas))
+end
+
+function normalize(ψ)
+	# I wonder if this scales with the bounds of integration
+	integral = approx_integral(ψ' * ψ, -100, 100)
+	return ((y) -> y / integral) ∘ ψ
+end
+
+test = normalize(gen_ψ_n(0))
