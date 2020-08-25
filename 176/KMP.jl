@@ -1,4 +1,7 @@
-unused_char = '0'
+module KMP
+export exact_matches
+
+const unused_char = '0'
 
 function z_score(i::Int, S::String)
     """
@@ -22,6 +25,9 @@ function z_algorithm(S::String)
 
     Define the rightmost z-box as the z-box with the rightmost end index.
 
+    This algorithm is called the Knuth-Morris-Pratt string-searching algorithm: 
+    https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm
+
     Calculates the z-scores for i = 2:|S|.
     """
     z_scores = Int[]
@@ -41,12 +47,6 @@ function z_algorithm(S::String)
                 z_i = length(B)
             else
                 # Start comparisons after initial substring
-                # extra = 0
-                # while length(S) >= r + 1 + extra && S[r + 1 + extra] == S[length(B) + extra]
-                #     extra += 1
-                # end
-                # z_i = length(B) + extra
-
                 z_i = length(B) 
                 while length(S) >= i + z_i && S[i + z_i] == S[1 + z_i]
                     z_i += 1 
@@ -76,4 +76,5 @@ function exact_matches(P::String, T::String)
     return length( filter(x -> x == length(P), z_scores) )
 end
 
-exact_matches("axyaxz", "xaxyaxyaxz")
+# exact_matches("axyaxz", "xaxyaxyaxz")
+end
