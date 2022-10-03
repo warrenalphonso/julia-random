@@ -7,6 +7,7 @@ numbers from 1 to 20?
 
 # Find prime factors of 1:20 and union them - 0.000023 seconds
 function union_prime_factors()
+
     union_factors = Dict(
         2 => 0,
         3 => 0,
@@ -42,7 +43,7 @@ function union_prime_factors()
             factors[factor] += 1
             n = n / factor
         end
-        for (k,v) in factors
+        for (k, v) in factors
             if v > union_factors[k]
                 union_factors[k] = v
             end
@@ -54,7 +55,7 @@ function union_prime_factors()
     end
 
     lcm = 1
-    for (k,v) in union_factors
+    for (k, v) in union_factors
         lcm *= k^v
     end
     lcm
