@@ -9,9 +9,9 @@ the longest substring starting at index i that is a prefix of S.
 
 Calculates the z-score at index i by direct comparison.
 """
-function z_score(i::Int, S::String)
+function z_score(i::Int, S::AbstractString, len::Int)
     count = 0
-    while length(S) >= count + i && S[count+1] == S[count+i]
+    while len >= count + i && S[count+1] == S[count+i]
         count += 1
     end
     return count
@@ -29,26 +29,27 @@ https://en.wikipedia.org/wiki/Knuth%E2%80%93Morris%E2%80%93Pratt_algorithm
 
 Calculates the z-scores for i = 2:|S|.
 """
-function z_algorithm(S::String)
+function z_algorithm(S::AbstractString, len::Int)
     z_scores = Int[]
     push!(z_scores, 0) # So z_j = z_scores[j]
     l, r = 0, 0
-    for i in 2:length(S)
+    for i in 2:len
         z_i = 0
         if i > r
-            z_i = z_score(i, S)
+            z_i = z_score(i, S, len)
         else
-            B = S[i:r]
+            B = SubString(S, i, r)
+            len_B = r - i + 1
             j = i - l + 1
             z_j = z_scores[j]
-            if z_j < length(B)
+            if z_j < len_B
                 z_i = z_j
-            elseif z_j > length(B)
-                z_i = length(B)
+            elseif z_j > len_B
+                z_i = len_B
             else
                 # Start comparisons after initial substring
-                z_i = length(B)
-                while length(S) >= i + z_i && S[i+z_i] == S[1+z_i]
+                z_i = len_B
+                while len >= i + z_i && S[i+z_i] == S[1+z_i]
                     z_i += 1
                 end
             end
@@ -70,9 +71,11 @@ To find the matches of pattern P in text T, we can create a combined string
 PXT, where X is a character not in P or T. Then we call z_algorithms on PXT.
 All the substrings with length |P| are exact matches of P in T.
 """
-function exact_matches(P::String, T::String)
+function exact_matches(P::AbstractString, T::AbstractString)
     S = P * unused_char * T
-    z_scores = z_algorithm(S)
-    return length(filter(x -> x == length(P), z_scores))
+    len = length(S)
+    len_P = length(P)
+    z_scores = z_algorithm(S, len)
+    return length(filter(x -> x == len_P, z_scores))
 end
 end
